@@ -1,70 +1,54 @@
-# Getting Started with Create React App
+# CI/CD Dashboard (local)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a demo CI/CD dashboard with a React frontend and an Express backend that simulates pipeline runs.
 
-## Available Scripts
+What it does
 
-In the project directory, you can run:
+- Frontend: React + Tailwind UI, pages to run a pipeline, watch status, and view reports.
+- Backend: Express + Socket.IO that accepts uploads, starts simulated runs, emits live logs and results, and persists run history to `server/runs.json`.
 
-### `npm start`
+Quick start (Windows)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Start the backend (recommended in a cmd.exe window):
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```powershell
+cd /d D:\CICD_Project\cicd-dashboard\server
+npm install
+npm start
+```
 
-### `npm test`
+2. Start the frontend (in a separate cmd.exe window):
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```powershell
+cd /d D:\CICD_Project\cicd-dashboard
+npm install
+npm start
+```
 
-### `npm run build`
+3. Open the frontend at http://localhost:3000. Use the Run Pipeline page to submit a repo URL or upload a ZIP and press "Run Pipeline". You'll be navigated to the Run Status page where logs appear live and results show when the simulation finishes.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Notes
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Runs are persisted to `server/runs.json` so history survives restarts.
+- Socket.IO streams logs and results to the frontend in real time.
+- This is a simulation: actual test execution is not performed.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Next steps you can take
 
-### `npm run eject`
+- Add authentication and repo cloning support.
+- Replace simulated pipeline with actual test execution in a sandbox/container.
+- Add charts for long-term trends and history.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+GitHub Actions integration
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+This repository includes a simple workflow `.github/workflows/ci-report.yml` that runs tests and posts results to your dashboard using the helper script `.github/scripts/send-results.js`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+To enable it:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Add two repository secrets in GitHub:
+	- `DASHBOARD_URL` — the base URL of your dashboard, e.g. `http://your-server:5000` or `http://dashboard.example.com`
+	- `DASHBOARD_TOKEN` — a secret token to secure the `/api/report` endpoint (set `DASHBOARD_API_TOKEN` on the server to the same value)
 
-## Learn More
+2. Commit the workflow; GitHub Actions will run on push and PRs and the workflow will POST test results to your dashboard.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Security note: the example workflow sends a bearer token in the Authorization header. Keep your tokens secret and rotate them periodically.

@@ -1,0 +1,145 @@
+[
+  {
+    "id": 1,
+    "status": "failed",
+    "file": null,
+    "createdAt": 1760077789542,
+    "logs": [
+      "Starting pipeline for https://github.com/user/repo",
+      "Installing dependencies...",
+      "Building project...",
+      "Running unit tests...",
+      "Unit tests completed",
+      "Linting code...",
+      "Tests: 5/6",
+      "Coverage: 72%",
+      "Lint score: 82%",
+      "Pipeline finished: failed"
+    ],
+    "repo": "https://github.com/user/repo",
+    "lang": "node",
+    "framework": "jest",
+    "results": {
+      "testsPassed": 5,
+      "testsTotal": 6,
+      "coverage": 72,
+      "lintScore": 82
+    }
+  },
+  {
+    "id": 2,
+    "status": "uploaded",
+    "file": null,
+    "createdAt": 1760077992912
+  },
+  {
+    "id": 3,
+    "status": "failed",
+    "file": null,
+    "createdAt": 1760078035832,
+    "logs": [
+      "Starting pipeline for uploaded artifact",
+      "Installing dependencies...",
+      "Building project...",
+      "Running unit tests...",
+      "Unit tests completed",
+      "Linting code...",
+      "Tests: 1/2",
+      "Coverage: 53%",
+      "Lint score: 66%",
+      "Pipeline finished: failed"
+    ],
+    "results": {
+      "testsPassed": 1,
+      "testsTotal": 2,
+      "coverage": 53,
+      "lintScore": 66
+    }
+  },
+  {
+    "id": 4,
+    "status": "failed",
+    "file": null,
+    "createdAt": 1760173389162,
+    "logs": [
+      "Starting pipeline for https://github.com/PaladiAbhideep/CICD",
+      "Installing dependencies...",
+      "Building project...",
+      "Running unit tests...",
+      "Unit tests completed",
+      "Linting code...",
+      "Tests: 3/4",
+      "Coverage: 90%",
+      "Lint score: 98%",
+      "Pipeline finished: failed"
+    ],
+    "repo": "https://github.com/PaladiAbhideep/CICD",
+    "lang": "java",
+    "framework": "junit",
+    "results": {
+      "testsPassed": 3,
+      "testsTotal": 4,
+      "coverage": 90,
+      "lintScore": 98
+    }
+  },
+  {
+    "id": 5,
+    "status": "failed",
+    "file": null,
+    "createdAt": 1762530227888,
+    "logs": [
+      "Starting pipeline for https://github.com/PaladiAbhideep/Project",
+      "Installing dependencies...",
+      "Building project...",
+      "Running unit tests...",
+      "Unit tests completed",
+      "Linting code...",
+      "Tests: 4/6",
+      "Coverage: 99%",
+      "Lint score: 73%",
+      "Pipeline finished: failed"
+    ],
+    "repo": "https://github.com/PaladiAbhideep/Project",
+    "lang": "node",
+    "framework": "jest",
+    "results": {
+      "testsPassed": 4,
+      "testsTotal": 6,
+      "coverage": 99,
+      "lintScore": 73
+    }
+  },
+  {
+    "id": 6,
+    "status": "success",
+    "repo": null,
+    "sha": null,
+    "results": {
+      "testsPassed": 1,
+      "testsTotal": 1,
+      "coverage": null,
+      "lintScore": null
+    },
+    "logs": [
+      "Parsed junit: total=1, passed=1, failed=0"
+    ],
+    "createdAt": 1762531012656
+  },
+  {
+    "id": 7,
+    "status": "success",
+    "repo": null,
+    "sha": null,
+    "results": {
+      "testsPassed": 1,
+      "testsTotal": 1,
+      "coverage": null,
+      "lintScore": null
+    },
+    "logs": [
+      "Parsed junit: total=1, passed=1, failed=0"
+    ],
+    "createdAt": 1762532053371
+  }
+]

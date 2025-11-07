@@ -1,0 +1,28 @@
+name: CI → Dashboard report
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test-and-report:
+    runs-on: ubuntu-latest
+    env:
+      DASHBOARD_URL: "${{ secrets.DASHBOARD_URL }}"
+      DASHBOARD_TOKEN: "${{ secrets.DASHBOARD_TOKEN }}"
+      GITHUB_REPOSITORY: "${{ github.repository }}"
+      GITHUB_SHA: "${{ github.sha }}"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install
+        run: npm ci
+      - name: Run tests
+        run: |
+          npm test -- --json --outputFile=jest-results.json || true
+      - name: Send results to dashboard
+        run: node .github/scripts/send-results.js
