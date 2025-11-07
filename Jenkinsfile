@@ -1,13 +1,8 @@
 pipeline {
-    agent {
-        docker { image 'node:18' }
-    }
-
+    agent any
     environment {
-        // Secret text credential stored in Jenkins (create credential id 'dashboard-api-token')
         DASHBOARD_API_TOKEN = credentials('dashboard-api-token')
     }
-
     stages {
         stage('Checkout') {
             steps { checkout scm }
@@ -15,18 +10,28 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'npm ci'
+                script {
+                    if (isUnix()) {
+                        sh 'npm ci'
+                    } else {
+                        bat 'npm ci'
+                    }
+                }
             }
         }
 
         stage('Run Tests') {
             steps {
-                // Runs Jest with junit reporter (test:ci script)
-                sh 'npm run test:ci'
+                script {
+                    if (isUnix()) {
+                        sh 'npm run test:ci'
+                    } else {
+                        bat 'npm run test:ci'
+                    }
+                }
             }
             post {
                 always {
-                    // Publish any junit xml files produced by tests
                     junit '**/junit*.xml'
                 }
             }
@@ -34,14 +39,25 @@ pipeline {
 
         stage('Report to Dashboard') {
             steps {
-                // report_results.js reads DASHBOARD_API_TOKEN from env
-                sh 'node ./scripts/report_results.js'
+                script {
+                    if (isUnix()) {
+                        sh 'node ./scripts/report_results.js'
+                    } else {
+                        bat 'node .\\scripts\\report_results.js'
+                    }
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                script {
+                    if (isUnix()) {
+                        sh 'npm run build'
+                    } else {
+                        bat 'npm run build'
+                    }
+                }
             }
             post {
                 success {
@@ -50,13 +66,8 @@ pipeline {
             }
         }
     }
-
     post {
-        always {
-            cleanWs()
-        }
-        failure {
-            echo 'Build failed - check console and test results.'
-        }
+        always { cleanWs() }
+        failure { echo 'Build failed - check console and test results.' }
     }
 }
