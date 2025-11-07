@@ -1,4 +1,3 @@
-// Minimal smoke test to avoid importing router-dependent App during Jest run.
-test('sanity check', () => {
+test('Jenkins sanity test', () => {
   expect(true).toBe(true);
 });
