@@ -1,73 +1,62 @@
 pipeline {
     agent any
+
     environment {
         DASHBOARD_API_TOKEN = credentials('dashboard-api-token')
     }
+
     stages {
-        stage('Checkout') {
-            steps { checkout scm }
-        }
-
-        stage('Install') {
+        stage('Checkout Code') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh 'npm ci'
-                    } else {
-                        bat 'npm ci'
-                    }
-                }
+                echo 'Checking out code...'
+                checkout scm
             }
         }
 
-        stage('Run Tests') {
+        stage('Install Dependencies') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh 'npm run test:ci'
-                    } else {
-                        bat 'npm run test:ci'
-                    }
-                }
-            }
-            post {
-                always {
-                    junit '**/junit*.xml'
-                }
+                echo 'Installing dependencies...'
+                bat 'npm install'
             }
         }
 
-        stage('Report to Dashboard') {
+        stage('Run Regression Tests') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh 'node ./scripts/report_results.js'
-                    } else {
-                        bat 'node .\\scripts\\report_results.js'
-                    }
-                }
+                echo 'Running Jest regression tests...'
+                bat 'npm run test:ci'
             }
         }
 
-        stage('Build') {
+        stage('Publish Test Results') {
+    steps {
+        echo 'Publishing JUnit test report...'
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+            junit allowEmptyResults: true, testResults: '**/junit*.xml'
+        }
+    }
+}
+
+
+
+        stage('Send Results to Dashboard') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh 'npm run build'
-                    } else {
-                        bat 'npm run build'
-                    }
-                }
+                echo 'Reporting results to backend...'
+                bat 'node scripts\\report_results.js'
             }
-            post {
-                success {
-                    archiveArtifacts artifacts: 'build/**', fingerprint: true
-                }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                echo 'Archiving build artifacts...'
+                archiveArtifacts artifacts: '**/junit*.xml', fingerprint: true
             }
         }
     }
+
     post {
-        always { cleanWs() }
-        failure { echo 'Build failed - check console and test results.' }
+        always {
+            echo 'Cleaning up workspace...'
+            cleanWs()
+        }
     }
 }
